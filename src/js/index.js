@@ -19,18 +19,20 @@ function onInput() {
 
       if (data.length === 1) {
         resetInput();
-        return renderCountryCard(data);
-      } else if (data.length >= 2 && data.length <= 10) {
-        return renderCountriesList(data);
+        renderCountryCard(data);
+        return;
+      } else if (data.length > 1 && data.length <= 10) {
+        renderCountriesList(data);
+        return;
       }
-      return Notify.info('Too many matches found. Please enter a more specific name.');
+      Notify.info('Too many matches found. Please enter a more specific name.');
     })
     .catch(onFetchError);
 }
 
 function renderCountryCard([{ flags, name, capital, population, languages }]) {
   cardContainer.innerHTML = `<div class="country-symbolics">
-  <img class="country-flag"src="${flags.svg}" alt="country flag" width="40" />
+  <img class="country-flag"src="${flags.svg}" alt="country flag" width="50" />
   <h1 class="country-name">${name.official}</h1>
   </div>
         <ul class="country-summary-list">
@@ -42,15 +44,14 @@ function renderCountryCard([{ flags, name, capital, population, languages }]) {
         </ul>`;
 }
 
-function renderCountriesList(arrayOfCountries) {
-  for (let i = 0; i < arrayOfCountries.length; i++) {
-    const { flags, name } = arrayOfCountries[i];
+function renderCountriesList(countries) {
+  countries.forEach(({ flags, name }) => {
     const markup = `<li class="country">
       <img class="country-flag"src="${flags.svg}" alt="country flag" width="40" />
   <p class="country-name">${name.common}</p>
   </li>`;
     listContainer.insertAdjacentHTML('beforeend', markup);
-  }
+  });
 }
 
 function onFetchError(error) {
